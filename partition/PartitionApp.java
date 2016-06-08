@@ -1,7 +1,5 @@
 package Algorithms.partition;
 
-import java.util.Random;
-
 /**
  * Created by Ruslan Zhdan on 06.06.2016.
  */
