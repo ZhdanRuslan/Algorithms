@@ -8,19 +8,23 @@ import java.io.InputStreamReader;
  * Created by Ruslan Zhdan on 29.06.2016.
  */
 
-class DataItem{
+class DataItem
+{
     private int iData;
 
-    public DataItem(int ii){
+    public DataItem(int ii)
+    {
         iData = ii;
     }
 
-    public int getKey(){
+    public int getKey()
+    {
         return iData;
     }
 }
 
-class HashTable{
+class HashTable
+{
     private DataItem nonItem;
     private DataItem[] hashArray;
     private int arraySize;
@@ -32,9 +36,11 @@ class HashTable{
         nonItem = new DataItem(-1);
     }
 
-    public void displayTable(){
+    public void displayTable()
+    {
         System.out.print("Table: ");
-        for (int j = 0; j < arraySize; j++){
+        for (int j = 0; j < arraySize; j++)
+        {
             if (hashArray[j] != null)
                 System.out.print(hashArray[j].getKey() + " ");
             else
@@ -43,74 +49,95 @@ class HashTable{
         System.out.println("");
     }
 
-    public int hashFunc(int key){
+    public int hashFunc1(int key)
+    {
         return key % arraySize;
     }
 
-    public void insert(DataItem item){
-        int key = item.getKey();
-        int hashVal = hashFunc(key);
+    public int hashFunc2(int key)
+    {
+//        array size have to be a prime num
+        return 5 - key % 5;
+    }
 
-        while (hashArray[hashVal] != null && hashArray[hashVal].getKey() != -1){
-            ++hashVal;
+    public void insert(int key, DataItem item)
+    {
+
+        int hashVal = hashFunc1(key);
+        int stepSize = hashFunc2(key);
+
+        while (hashArray[hashVal] != null && hashArray[hashVal].getKey() != -1)
+        {
+            hashVal += stepSize;
             hashVal %= arraySize;
         }
         hashArray[hashVal] = item;
     }
 
-    public DataItem delete(int key){
-        int hashVal = hashFunc(key);
+    public DataItem delete(int key)
+    {
 
-        while (hashArray[hashVal] != null){
-            if (hashArray[hashVal].getKey() == key){
+        int hashVal = hashFunc1(key);
+        int stepSize = hashFunc2(key);
+
+        while (hashArray[hashVal] != null)
+        {
+            if (hashArray[hashVal].getKey() == key)
+            {
                 DataItem temp = hashArray[hashVal];
                 hashArray[hashVal] = nonItem;
                 return temp;
             }
-            ++hashVal;
+            hashVal += stepSize;
             hashVal %= arraySize;
         }
         return null;
     }
 
-    public DataItem find(int key){
-        int hashVal = hashFunc(key);
+    public DataItem find(int key)
+    {
 
-        while (hashArray[hashVal] != null){
+        int hashVal = hashFunc1(key);
+        int stepSize = hashFunc2(key);
+
+        while (hashArray[hashVal] != null)
+        {
             if (hashArray[hashVal].getKey() == key)
                 return hashArray[hashVal];
-            ++hashVal;
+            hashVal += stepSize;
             hashVal %= arraySize;
         }
         return null;
     }
 }
 
-public class HashTableApp
+class HashTableAppWithDoubleHash
 {
     public static void main(String[] args) throws IOException
     {
         DataItem aDataItem;
-        int aKey, size, n, keysPerCell;
+        int aKey, size, n;
         System.out.print("Enter size of hash table: ");
         size = (int) getInt();
         System.out.print("Enter initial number of items: ");
         n = (int) getInt();
-        keysPerCell = 10;
 
         HashTable theHashTable = new HashTable(size);
 
-        for (int j = 0; j < n; j++){
-            aKey = (int)(java.lang.Math.random() * keysPerCell * size);
+        for (int j = 0; j < n; j++)
+        {
+            aKey = (int) (java.lang.Math.random() * 2 * size);
             aDataItem = new DataItem(aKey);
-            theHashTable.insert(aDataItem);
+            theHashTable.insert(aKey, aDataItem);
         }
 
-        while (true){
+        while (true)
+        {
             System.out.print("Enter first letter of ");
             System.out.print("show, insert, delete or find: ");
             char choice = getChar();
-            switch (choice){
+            switch (choice)
+            {
                 case 's':
                     theHashTable.displayTable();
                     break;
@@ -118,7 +145,7 @@ public class HashTableApp
                     System.out.print("Enter a key value to insert: ");
                     aKey = (int) getInt();
                     aDataItem = new DataItem(aKey);
-                    theHashTable.insert(aDataItem);
+                    theHashTable.insert(aKey, aDataItem);
                     break;
                 case 'd':
                     System.out.print("Enter a key value to delete: ");
@@ -129,10 +156,10 @@ public class HashTableApp
                     System.out.println("Enter a key value to find: ");
                     aKey = (int) getInt();
                     aDataItem = theHashTable.find(aKey);
-                    if (aDataItem != null){
+                    if (aDataItem != null)
+                    {
                         System.out.println("Found: " + aKey);
-                    }
-                    else
+                    } else
                         System.out.println("Could not to find " + aKey);
                     break;
                 default:
